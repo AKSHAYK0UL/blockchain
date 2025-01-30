@@ -1,11 +1,10 @@
 package blockchain
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
-
-	"github.com/AKSHAYK0UL/koulnetworkblockchain/constants"
 )
 
 type Blockchain struct {
@@ -13,15 +12,21 @@ type Blockchain struct {
 	Chain           []*Block       `json:"chain"` //chain of block == blockchain
 }
 
-// add transaction
-func (bc *Blockchain) AddTransaction(from, to string, value int64, data []byte) {
-	txn := NewTransaction(Transaction{from, to, value, data})
-	bc.TransactionPool = append(bc.TransactionPool, txn)
+// add transaction will add Transaction to the Transaction pool
 
+func (bc *Blockchain) AddTransaction(from, to string, value uint64, data []byte) error {
+	txn := NewTransaction(Transaction{from, to, value, data})
+
+	if !txn.VerifyTransaction() {
+		return errors.New("invalid transaction")
+	}
+
+	bc.TransactionPool = append(bc.TransactionPool, txn)
+	return nil
 }
 
-// create block in blockchain
-func (bc *Blockchain) CreateBlock(nonce int) *Block {
+// create block in blockchain and empty the Transaction pool
+func (bc *Blockchain) CreateBlock() *Block {
 	prev_hash := bc.FindlastBlock().Hash //hash of the last block
 	block := NewBlock(prev_hash, bc.ProofOfWork(), bc.TransactionPool)
 
@@ -51,7 +56,7 @@ func (bc *Blockchain) CreateGenesisBlock(txn []*Transaction) *Block {
 }
 
 // create new block chain
-func CreateNewBlockChain() *Blockchain {
+func NewBlockChain() *Blockchain {
 	bc := new(Blockchain)
 	bc.CreateGenesisBlock([]*Transaction{})
 	return bc
@@ -83,30 +88,4 @@ func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 		txns = append(txns, NewTransaction(Transaction{From: t.From, To: t.To, Value: t.Value, Data: t.Data}))
 	}
 	return txns
-}
-
-// Valid Proof
-func (bc *Blockchain) ValidProof(nonce int, prev_hash [32]byte, txns []*Transaction, difficulty int) bool {
-	zeros := strings.Repeat("0", constants.MINING_DIFFICULTY)
-	Generateblock := Block{TimeStamp: 0, PreviousHash: prev_hash, Nonce: nonce, Transactions: txns}
-	checkNewBlockHash := fmt.Sprintf("%x", Generateblock.GenerateHash())
-	fmt.Println(checkNewBlockHash)
-	return checkNewBlockHash[:constants.MINING_DIFFICULTY] == zeros
-}
-
-// PoW [return the  valid nonce value]
-func (bc *Blockchain) ProofOfWork() int {
-	txns := bc.CopyTransactionPool()
-	nonce := 0
-
-	lastBlock := bc.FindlastBlock()
-	if lastBlock == nil {
-		// If there's no last block, return a default nonce
-		return nonce
-	}
-
-	for !bc.ValidProof(nonce, lastBlock.Hash, txns, constants.MINING_DIFFICULTY) {
-		nonce++
-	}
-	return nonce
 }

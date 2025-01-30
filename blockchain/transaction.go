@@ -9,7 +9,7 @@ import (
 type Transaction struct {
 	From  string `json:"from"`
 	To    string `json:"to"`
-	Value int64  `json:"value"` //amount
+	Value uint64 `json:"value"` //amount
 	Data  []byte `json:"data"`  // will be used for smart contracts
 }
 
@@ -41,4 +41,16 @@ func (txn *Transaction) Print() {
 	fmt.Printf("Data		 %v\n", txn.Data)
 	fmt.Printf("%s\n", strings.Repeat("*", 70))
 
+}
+
+// verify transaction
+func (txn Transaction) VerifyTransaction() bool {
+	switch {
+	case txn.Value == 0:
+		return false
+
+	//check signature
+	default:
+		return true
+	}
 }

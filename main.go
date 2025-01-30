@@ -16,19 +16,19 @@ func init() {
 //	}
 func main() {
 
-	blockchain := blockchain.CreateNewBlockChain() //create a new BlockChain with the genesis block
+	blockchain := blockchain.NewBlockChain() //create a new BlockChain with the genesis block
 	// blockchain.Print()
 	//Add transaction
 	blockchain.AddTransaction("Alex", "Jason", 11, []byte{055, 41, 144})
 	//create a new block and add it to the chain
-	blockchain.CreateBlock(34)
+	blockchain.CreateBlock()
 	// blockchain.Print()
 
 	// prev_hash = blockchain.FindlastBlock().GenerateHash()
-	blockchain.AddTransaction("Ben", "Sam", 47, []byte{78, 41, 044})
+	blockchain.AddTransaction("Ben", "Sam", 0, []byte{78, 41, 044})
 	blockchain.AddTransaction("Smith", "Ali", 77, []byte{78, 41, 044})
 
-	blockchain.CreateBlock(5)
+	blockchain.CreateBlock()
 	blockchain.Print()
 
 }
