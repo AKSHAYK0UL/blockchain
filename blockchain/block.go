@@ -43,17 +43,17 @@ func (b *Block) Print() {
 }
 
 // toJson
-func (b *Block) toJson() (
+func (b *Block) toByteSlice() (
 	[]byte, error) {
-	json, err := json.Marshal(b)
+	byteSlice, err := json.Marshal(b)
 	if err != nil {
 		return []byte{}, err
 	}
-	return json, nil
+	return byteSlice, nil
 }
 
 // Generate hash
 func (b *Block) GenerateHash() [32]byte {
-	byt, _ := b.toJson()
+	byt, _ := b.toByteSlice()
 	return sha256.Sum256(byt)
 }

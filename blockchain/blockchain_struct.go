@@ -72,10 +72,14 @@ func (bc *Blockchain) Print() {
 	for idx, block := range bc.Chain {
 
 		fmt.Printf("%s Block %d %s\n", strings.Repeat(".", 30), idx, strings.Repeat(".", 30))
-		fmt.Printf("Blockchain Address         %s\n", constants.BLOCKCHAIN_NAME)
-		fmt.Printf("Miner Address              %s\n", bc.BlockchainAddress)
-		fmt.Printf("Mining Reward              %d\n", constants.MINING_REWARD)
+		fmt.Printf("%s MINER DETAIL'S %s\n", strings.Repeat("-", 26), strings.Repeat("-", 27))
+
+		fmt.Printf("BLOCKCHAIN ADDRESS         %s\n", constants.BLOCKCHAIN_NAME)
+		fmt.Printf("MINER ADDRESS              %s\n", bc.BlockchainAddress)
+		fmt.Printf("MINING REWARD              %d\n", constants.MINING_REWARD)
+		fmt.Printf("%s\n", strings.Repeat("*", 69))
 		block.Print()
+		fmt.Printf("%s", strings.Repeat("\n", 2))
 	}
 	fmt.Printf("%s\n", strings.Repeat("#", 69))
 }
