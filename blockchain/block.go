@@ -32,10 +32,10 @@ func NewBlock(prev_hash [32]byte, nonce int, txn []*Transaction) *Block {
 
 // print block
 func (b *Block) Print() {
-	fmt.Printf("Timestamp          %d\n", b.TimeStamp)
-	fmt.Printf("Nonce              %d\n", b.Nonce)
-	fmt.Printf("Hash   	           %x\n", b.Hash)
-	fmt.Printf("Previous Hash      %x\n", b.PreviousHash)
+	fmt.Printf("Timestamp                  %d\n", b.TimeStamp)
+	fmt.Printf("Nonce                      %d\n", b.Nonce)
+	fmt.Printf("Hash   	                   %x\n", b.Hash)
+	fmt.Printf("Previous Hash              %x\n", b.PreviousHash)
 	for _, t := range b.Transactions {
 		t.Print()
 	}

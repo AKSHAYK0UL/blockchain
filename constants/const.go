@@ -2,5 +2,6 @@ package constants
 
 const (
 	BLOCKCHAIN_NAME   = "KoulChain"
-	MINING_DIFFICULTY = 2
+	MINING_DIFFICULTY = 3
+	MINING_REWARD     = 5
 )

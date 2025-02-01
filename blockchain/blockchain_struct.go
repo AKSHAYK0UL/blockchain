@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/AKSHAYK0UL/koulnetworkblockchain/constants"
 )
 
 type Blockchain struct {
-	TransactionPool []*Transaction `json:"transaction_pool"`
-	Chain           []*Block       `json:"chain"` //chain of block == blockchain
+	TransactionPool   []*Transaction `json:"transaction_pool"`
+	Chain             []*Block       `json:"chain"`             //chain of block == blockchain
+	BlockchainAddress string         `json:"blockchainaddress"` //address of the user in the blockchain network
 }
 
 // add transaction will add Transaction to the Transaction pool
@@ -56,8 +59,9 @@ func (bc *Blockchain) CreateGenesisBlock(txn []*Transaction) *Block {
 }
 
 // create new block chain
-func NewBlockChain() *Blockchain {
+func NewBlockChain(address string) *Blockchain {
 	bc := new(Blockchain)
+	bc.BlockchainAddress = address
 	bc.CreateGenesisBlock([]*Transaction{})
 	return bc
 }
@@ -68,6 +72,9 @@ func (bc *Blockchain) Print() {
 	for idx, block := range bc.Chain {
 
 		fmt.Printf("%s Block %d %s\n", strings.Repeat(".", 30), idx, strings.Repeat(".", 30))
+		fmt.Printf("Blockchain Address         %s\n", constants.BLOCKCHAIN_NAME)
+		fmt.Printf("Miner Address              %s\n", bc.BlockchainAddress)
+		fmt.Printf("Mining Reward              %d\n", constants.MINING_REWARD)
 		block.Print()
 	}
 	fmt.Printf("%s\n", strings.Repeat("#", 69))
