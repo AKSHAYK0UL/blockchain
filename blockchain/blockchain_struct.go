@@ -1,12 +1,13 @@
 package blockchain
 
 import (
-	"errors"
+	"crypto/ecdsa"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/AKSHAYK0UL/koulnetworkblockchain/constants"
+	"github.com/AKSHAYK0UL/koulnetworkblockchain/wallet"
 )
 
 type Blockchain struct {
@@ -17,15 +18,21 @@ type Blockchain struct {
 
 // add transaction will add Transaction to the Transaction pool
 
-func (bc *Blockchain) AddTransaction(from, to string, value uint64, data []byte) error {
-	txn := NewTransaction(Transaction{from, to, value, data})
+func (bc *Blockchain) AddTransaction(SenderPublicKey *ecdsa.PublicKey, S *wallet.Signature, From, To string, Value uint64, Data []byte) bool {
+	txn := NewTransaction(Transaction{From, To, Value, Data})
 
-	if !txn.VerifyTransaction() {
-		return errors.New("invalid transaction")
+	//if the reward is being added to the user in that case the signature of the transaction will be ignored
+	if txn.From == constants.BLOCKCHAIN_NAME {
+		bc.TransactionPool = append(bc.TransactionPool, txn)
+		return true
+	}
+
+	if !txn.VerifyTranaction(SenderPublicKey, S) {
+		return false
 	}
 
 	bc.TransactionPool = append(bc.TransactionPool, txn)
-	return nil
+	return true
 }
 
 // create block in blockchain and empty the Transaction pool

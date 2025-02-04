@@ -1,9 +1,13 @@
 package blockchain
 
 import (
+	"crypto/ecdsa"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/AKSHAYK0UL/koulnetworkblockchain/wallet"
 )
 
 type Transaction struct {
@@ -24,12 +28,12 @@ func NewTransaction(txn Transaction) *Transaction {
 }
 
 // toJson
-func (txn *Transaction) ToJson() (string, error) {
-	json, err := json.Marshal(txn)
+func (txn *Transaction) ToByteSlice() ([]byte, error) {
+	byteSlice, err := json.Marshal(txn)
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
-	return string(json), nil
+	return byteSlice, nil
 }
 
 // print
@@ -44,13 +48,18 @@ func (txn *Transaction) Print() {
 }
 
 // verify transaction
-func (txn Transaction) VerifyTransaction() bool {
-	switch {
-	case txn.Value == 0:
+func (txn Transaction) VerifyTranaction(senderPublicKey *ecdsa.PublicKey, s *wallet.Signature) bool {
+	byteSlice, err := txn.ToByteSlice()
+	if err != nil {
+
+		return false
+	}
+	hash := sha256.Sum256(byteSlice)
+
+	if txn.Value == 0 && !ecdsa.Verify(senderPublicKey, hash[:], s.R, s.S) { //check the signature
 		return false
 
-	//check signature
-	default:
-		return true
 	}
+	return true
+
 }

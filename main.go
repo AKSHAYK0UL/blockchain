@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/AKSHAYK0UL/koulnetworkblockchain/blockchain"
 	"github.com/AKSHAYK0UL/koulnetworkblockchain/constants"
 	"github.com/AKSHAYK0UL/koulnetworkblockchain/wallet"
 )
@@ -17,13 +18,20 @@ func init() {
 //	}
 func main() {
 
-	wallet, err := wallet.NewWallet()
-	if err != nil {
-		log.Panicln(err)
-	}
-	fmt.Printf("PriavteKey %s\n", wallet.WalletPrivateKeyToString())
-	fmt.Printf("PublicKey %s\n", wallet.WalletPublicKeyToString())
-	fmt.Printf("Wallet address %s\n", wallet.WalletAddress())
+	// w, err := wallet.NewWallet()
+	// if err != nil {
+	// 	log.Panicln(err)
+	// }
+	// fmt.Printf("PriavteKey %s\n", w.WalletPrivateKeyToString())
+	// fmt.Printf("PublicKey %s\n", w.WalletPublicKeyToString())
+	// fmt.Printf("Wallet address %s\n", w.WalletAddress())
+
+	// wtxn := wallet.NewTransaction(w.PrivateKey, w.PublicKey, w.BlockchainAddress, "testuser", 17, []byte{})
+	// ws, err := wtxn.GenerateSignature()
+	// if err != nil {
+	// 	log.Panicln(err)
+	// }
+	// fmt.Printf("Signature %s ", ws)
 
 	// blockchain := blockchain.NewBlockChain("0x0y87dbdj9dnd4jb8") //create a new BlockChain with the genesis block and user address
 	// //Add transaction
@@ -41,5 +49,27 @@ func main() {
 	// fmt.Printf("Total amount of User Jason %d\n", blockchain.CalculateTotalAmount("Jason"))
 
 	// fmt.Printf("Total amount of User Ali %d\n", blockchain.CalculateTotalAmount("Ali"))
+	//-------------------05-02-2025----------------------------------
+
+	//create wallets
+
+	MinerWallet, _ := wallet.NewWallet()
+	AlexWallet, _ := wallet.NewWallet()
+	BenWallet, _ := wallet.NewWallet()
+
+	wT := wallet.NewTransaction(AlexWallet.PrivateKey, AlexWallet.PublicKey, AlexWallet.BlockchainAddress, BenWallet.BlockchainAddress, 14, []byte{})
+
+	//create new blockchain
+
+	blkchn := blockchain.NewBlockChain(MinerWallet.BlockchainAddress)
+	//create a transaction
+	gS, err := wT.GenerateSignature()
+	if err != nil {
+		fmt.Println("err: ", err.Error())
+	}
+	addTxn := blkchn.AddTransaction(AlexWallet.PublicKey, gS, AlexWallet.BlockchainAddress, BenWallet.BlockchainAddress, 14, []byte{})
+	blkchn.Mining()
+	fmt.Println("Transaction Added?", addTxn)
+	blkchn.Print()
 
 }

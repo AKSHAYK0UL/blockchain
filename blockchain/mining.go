@@ -3,11 +3,12 @@ package blockchain
 import "github.com/AKSHAYK0UL/koulnetworkblockchain/constants"
 
 func (bc *Blockchain) Mining() {
-	NewTransaction(Transaction{From: constants.BLOCKCHAIN_NAME, To: bc.BlockchainAddress, Value: constants.MINING_REWARD})
+	// NewTransaction(Transaction{From: constants.BLOCKCHAIN_NAME, To: bc.BlockchainAddress, Value: constants.MINING_REWARD})
+	bc.AddTransaction(nil, nil, constants.BLOCKCHAIN_NAME, bc.BlockchainAddress, constants.MINING_REWARD, []byte{})
 	bc.CreateBlock()
 }
 
-//blockchainAddress address of the user
+// blockchainAddress address of the user
 func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) uint64 {
 
 	var totalAmount uint64
