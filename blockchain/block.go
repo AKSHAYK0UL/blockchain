@@ -42,7 +42,7 @@ func (b *Block) Print() {
 
 }
 
-// toJson
+// to byteSlice
 func (b *Block) toByteSlice() (
 	[]byte, error) {
 	byteSlice, err := json.Marshal(b)
@@ -57,3 +57,20 @@ func (b *Block) GenerateHash() [32]byte {
 	byt, _ := b.toByteSlice()
 	return sha256.Sum256(byt)
 }
+
+// // ToJson
+// func (b *Block) ToJson() ([]byte, error) {
+// 	return json.Marshal(struct {
+// 		Hash         string         `json:"hash"`
+// 		PreviousHash string         `json:"previous_hash"`
+// 		Nonce        int            `json:"nonce"`
+// 		TimeStamp    int64          `json:"timestamp"`
+// 		Transactions []*Transaction `json:"transactions"`
+// 	}{
+// 		Hash:         fmt.Sprintf("%x", b.Hash),
+// 		PreviousHash: fmt.Sprintf("%x", b.PreviousHash),
+// 		Nonce:        b.Nonce,
+// 		TimeStamp:    b.TimeStamp,
+// 		Transactions: b.Transactions,
+// 	})
+//}

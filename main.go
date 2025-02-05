@@ -1,12 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 
-	"github.com/AKSHAYK0UL/koulnetworkblockchain/blockchain"
 	"github.com/AKSHAYK0UL/koulnetworkblockchain/constants"
-	"github.com/AKSHAYK0UL/koulnetworkblockchain/wallet"
+	"github.com/AKSHAYK0UL/koulnetworkblockchain/server"
 )
 
 func init() {
@@ -53,23 +53,35 @@ func main() {
 
 	//create wallets
 
-	MinerWallet, _ := wallet.NewWallet()
-	AlexWallet, _ := wallet.NewWallet()
-	BenWallet, _ := wallet.NewWallet()
+	// MinerWallet, _ := wallet.NewWallet()
+	// AlexWallet, _ := wallet.NewWallet()
+	// BenWallet, _ := wallet.NewWallet()
 
-	wT := wallet.NewTransaction(AlexWallet.PrivateKey, AlexWallet.PublicKey, AlexWallet.BlockchainAddress, BenWallet.BlockchainAddress, 14, []byte{})
+	// wT := wallet.NewTransaction(AlexWallet.PrivateKey, AlexWallet.PublicKey, AlexWallet.BlockchainAddress, BenWallet.BlockchainAddress, 14, []byte{})
 
-	//create new blockchain
+	// //create new blockchain
 
-	blkchn := blockchain.NewBlockChain(MinerWallet.BlockchainAddress)
-	//create a transaction
-	gS, err := wT.GenerateSignature()
-	if err != nil {
-		fmt.Println("err: ", err.Error())
-	}
-	addTxn := blkchn.AddTransaction(AlexWallet.PublicKey, gS, AlexWallet.BlockchainAddress, BenWallet.BlockchainAddress, 14, []byte{})
-	blkchn.Mining()
-	fmt.Println("Transaction Added?", addTxn)
-	blkchn.Print()
+	// blkchn := blockchain.NewBlockChain(MinerWallet.BlockchainAddress)
+	// //create a transaction
+	// gS, err := wT.GenerateSignature()
+	// if err != nil {
+	// 	fmt.Println("err: ", err.Error())
+	// }
+	// addTxn := blkchn.AddTransaction(AlexWallet.PublicKey, gS, AlexWallet.BlockchainAddress, BenWallet.BlockchainAddress, 14, []byte{})
+	// blkchn.Mining()
+	// fmt.Println("Transaction Added?", addTxn)
+	// blkchn.Print()
+
+	// fmt.Printf("Alex amount %d\n", blkchn.CalculateTotalAmount(AlexWallet.BlockchainAddress))
+	// fmt.Printf("Ben amount %d\n", blkchn.CalculateTotalAmount(BenWallet.BlockchainAddress))
+	// fmt.Printf("Miner amount %d\n", blkchn.CalculateTotalAmount(MinerWallet.BlockchainAddress))
+
+	//-------------------06-02-2025----------------------------------
+	// use this -> go run main.go -[port number] to change the port number
+	port := flag.Uint("port", 8000, "TCP PORT NUMBER")
+	flag.Parse()
+	fmt.Println(*port)
+	server := server.NewServer(uint16(*port))
+	server.Run()
 
 }

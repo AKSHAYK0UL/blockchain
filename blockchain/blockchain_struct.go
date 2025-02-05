@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"crypto/ecdsa"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ type Blockchain struct {
 	TransactionPool   []*Transaction `json:"transaction_pool"`
 	Chain             []*Block       `json:"chain"`             //chain of block == blockchain
 	BlockchainAddress string         `json:"blockchainaddress"` //address of the user in the blockchain network
+	Port              uint16         `json:"port"`
 }
 
 // add transaction will add Transaction to the Transaction pool
@@ -28,8 +30,14 @@ func (bc *Blockchain) AddTransaction(SenderPublicKey *ecdsa.PublicKey, S *wallet
 	}
 
 	if !txn.VerifyTranaction(SenderPublicKey, S) {
+
 		return false
 	}
+	// if bc.CalculateTotalAmount(From) < Value {
+	// 	fmt.Println("ERROR : Not enough balance in the wallet")
+	// 	return false
+
+	// }
 
 	bc.TransactionPool = append(bc.TransactionPool, txn)
 	return true
@@ -66,7 +74,7 @@ func (bc *Blockchain) CreateGenesisBlock(txn []*Transaction) *Block {
 }
 
 // create new block chain
-func NewBlockChain(address string) *Blockchain {
+func NewBlockChain(address string, port uint16) *Blockchain {
 	bc := new(Blockchain)
 	bc.BlockchainAddress = address
 	bc.CreateGenesisBlock([]*Transaction{})
@@ -106,4 +114,13 @@ func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 		txns = append(txns, NewTransaction(Transaction{From: t.From, To: t.To, Value: t.Value, Data: t.Data}))
 	}
 	return txns
+}
+
+// tojson
+func (bc *Blockchain) Tojson() ([]byte, error) {
+	return json.Marshal(struct {
+		Blocks []*Block `json:"blocks"`
+	}{
+		Blocks: bc.Chain,
+	})
 }
