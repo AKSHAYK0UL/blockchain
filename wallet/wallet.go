@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 
 	"github.com/btcsuite/btcutil"
@@ -79,4 +80,16 @@ func (w *Wallet) WalletPublicKey() *ecdsa.PublicKey {
 
 func (w *Wallet) WalletPublicKeyToString() string {
 	return fmt.Sprintf("%x%x", w.PublicKey.X.Bytes(), w.PublicKey.Y.Bytes())
+}
+
+func (w *Wallet) ToJson() ([]byte, error) {
+	return json.Marshal(struct {
+		PrivateKey        string `json:"private_key"`
+		PublicKey         string `json:"public_key"`
+		BlockchainAddress string `json:"blockchainaddress"`
+	}{
+		PrivateKey:        w.WalletPrivateKeyToString(),
+		PublicKey:         w.WalletPublicKeyToString(),
+		BlockchainAddress: w.BlockchainAddress,
+	})
 }

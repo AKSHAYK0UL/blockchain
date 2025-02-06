@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/AKSHAYK0UL/koulnetworkblockchain/wallet"
 )
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
@@ -34,5 +36,31 @@ func (ser *Server) GetBlockChain(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		fmt.Fprintf(w, "Invalid request")
+	}
+}
+
+func (ser *Server) CreateWallet(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		w.Header().Set("Content-Type", "application/json")
+		wallet, err := wallet.NewWallet()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		bs, err := wallet.ToJson()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		_, err = w.Write(bs)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
+
+	default:
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }

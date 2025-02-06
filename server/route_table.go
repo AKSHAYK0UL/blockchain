@@ -10,6 +10,8 @@ func (ser *Server) Route() *http.ServeMux {
 	serMux := http.NewServeMux()
 	serMux.HandleFunc("GET /", HandleHome)
 	serMux.HandleFunc("GET /chain", ser.GetBlockChain)
+	//create wallet for new user
+	serMux.HandleFunc("GET /create-wallet", ser.CreateWallet)
 	return serMux
 }
 
